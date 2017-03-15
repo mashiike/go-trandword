@@ -1,4 +1,4 @@
-package: github.com/mashiike/go-trendword
+package: github.com/mashiike/go-trandword
 import:
   - package: github.com/ikawaha/kagome/tokenizer
 
