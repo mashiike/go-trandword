@@ -2,3 +2,5 @@ vendor
 go-trandword
 /data/*
 !/data/default.txt
+*.txt
+*.csv
