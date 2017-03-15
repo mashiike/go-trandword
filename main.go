@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -12,15 +13,23 @@ import (
 
 func main() {
 	var input = flag.String("input", "data/default.txt", "input file")
+	var modef = flag.Bool("mode-file", false, "input mode file read flag")
 	flag.Parse()
 
-	fp, err := os.Open(*input)
-	if err != nil {
-		panic(err)
+	var reader io.Reader
+
+	if *modef {
+		var err error
+		reader, err = os.Open(*input)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		reader = os.Stdin
 	}
 
 	t := tokenizer.New()
-	scanner := bufio.NewScanner(fp)
+	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() {
 		if err := scanner.Err(); err != nil {
 			panic(err)
