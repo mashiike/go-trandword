@@ -4,16 +4,22 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"sort"
 
 	"github.com/ikawaha/kagome/tokenizer"
 )
+
+type Vocab struct {
+	Word string
+	Freq int
+}
 
 func main() {
 
 	t := tokenizer.New()
 	scanner := bufio.NewScanner(os.Stdin)
 
-	vcab := make(map[string]int)
+	vocabs := make([]Vocab, 0)
 	for scanner.Scan() {
 		if err := scanner.Err(); err != nil {
 			panic(err)
@@ -25,14 +31,28 @@ func main() {
 			}
 			features := token.Features()
 			if features[0] == "名詞" {
-				vcab[token.Surface]++
+				flag := false
+				for i, _ := range vocabs {
+					if vocabs[i].Word == token.Surface {
+						vocabs[i].Freq++
+						flag = true
+						break
+					}
+				}
+				if !flag {
+					vocabs = append(vocabs, Vocab{
+						Word: token.Surface,
+						Freq: 1,
+					})
+				}
 			}
 		}
 	}
 
+	sort.Slice(vocabs, func(i, j int) bool { return vocabs[i].Freq > vocabs[j].Freq })
 	fmt.Println("word,frequency")
-	for k, v := range vcab {
-		fmt.Printf("\"%s\",\"%d\"\n", k, v)
+	for _, v := range vocabs {
+		fmt.Printf("\"%s\",\"%d\"\n", v.Word, v.Freq)
 	}
 
 }
