@@ -1,3 +1,4 @@
 vendor
 go-trandword
-data
+/data/*
+!/data/default.txt
