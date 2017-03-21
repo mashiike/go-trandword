@@ -38,7 +38,7 @@ deployment:
     commands:
       - go get github.com/tcnksm/ghr
       - go get github.com/mitchellh/gox
-      - cd $PROJECT_ROOT && gox -output "release/{{.Dir}}-${CIRCLE_TAG}-{{.OS}}-{{.Arch}}/{{.Dir}}" -os "darwin linux windows" -arch "amd64 386" -ldflags "-X main.Version=${CIRCLE_TAG}" ./cmd/any2vec/
+      - cd $PROJECT_ROOT && gox -output "release/{{.Dir}}-${CIRCLE_TAG}-{{.OS}}-{{.Arch}}/{{.Dir}}" -os "darwin linux windows" -arch "amd64 386" -ldflags "-X main.Version=${CIRCLE_TAG}" ./cmd/trandword/
       - mkdir $PROJECT_ROOT/zip
       - cd $PROJECT_ROOT/release && for file in $(find ./*/* -type f); do zip $PROJECT_ROOT/zip/$(basename $(dirname $file)).zip $file; done
       - cd $PROJECT_ROOT && ghr -t $GITHUB_TOKEN -u mashiike -r $CIRCLE_PROJECT_REPONAME --replace $CIRCLE_TAG zip
