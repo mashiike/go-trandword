@@ -1,0 +1,44 @@
+machine:
+  timezone: Asia/Tokyo
+  environment:
+    GODIST: "go1.8.linux-amd64.tar.gz"
+    GOROOT: ""
+    GOPATH: "${HOME}/go"
+    PATH: "${GOPATH}/bin:${PATH}"
+    PROJECT_ROOT: "${GOPATH}/src/github.com/mashiike/go-trandword"
+
+checkout:
+  post:
+    - mkdir -p $PROJECT_ROOT
+    - rsync -azC --delete ./ $PROJECT_ROOT/
+
+dependencies:
+  cache_directories:
+    - ~/download
+  pre:
+    - mkdir -p ~/download
+    - test -e ~/download/$GODIST || curl -o ~/download/$GODIST https://storage.googleapis.com/golang/$GODIST
+    - sudo rm -rf /usr/local/go
+    - sudo tar -C /usr/local -xzf ~/download/$GODIST
+    - mkdir $GOPATH/bin
+    - wget https://github.com/Masterminds/glide/releases/download/v0.12.3/glide-v0.12.3-linux-amd64.zip
+    - unzip glide-v0.12.3-linux-amd64.zip
+    - install linux-amd64/glide $GOPATH/bin/glide
+
+  override:
+    - cd $PROJECT_ROOT && make get-deps
+
+test:
+  override:
+    - cd $PROJECT_ROOT && make test
+
+deployment:
+  release:
+    tag: /[0-9]+\.[0-9]+\.[0-9]+/
+    commands:
+      - go get github.com/tcnksm/ghr
+      - go get github.com/mitchellh/gox
+      - cd $PROJECT_ROOT && gox -output "release/{{.Dir}}-${CIRCLE_TAG}-{{.OS}}-{{.Arch}}/{{.Dir}}" -os "darwin linux windows" -arch "amd64 386" -ldflags "-X main.Version=${CIRCLE_TAG}" ./cmd/any2vec/
+      - mkdir $PROJECT_ROOT/zip
+      - cd $PROJECT_ROOT/release && for file in $(find ./*/* -type f); do zip $PROJECT_ROOT/zip/$(basename $(dirname $file)).zip $file; done
+      - cd $PROJECT_ROOT && ghr -t $GITHUB_TOKEN -u mashiike -r $CIRCLE_PROJECT_REPONAME --replace $CIRCLE_TAG zip

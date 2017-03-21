@@ -1,24 +1,25 @@
 # go-trandword
 
-## simple is best.
+[![CircleCI](https://circleci.com/gh/mashiike/go-trandword/tree/master.svg?style=shield)](htps://circleci.com/gh/mashiike/go-trandword/tree/master)
 
+## simple is best.
 use kagome
 
 ## Make
 
 ```
-glide install
+make get-deps
 ```
 and
 
 ```
-go build
+make
 ```
 
 ,
 
 ```
-cat data/default.txt | ./go-trandword
+cat data/default.txt | ./cmd/trandword/trandword
 ```
 
 output is
