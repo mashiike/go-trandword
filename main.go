@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 
 	"github.com/ikawaha/kagome/tokenizer"
 )
@@ -20,17 +21,21 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	vocabs := make([]Vocab, 0)
+	nounCount := float32(0)
 	for scanner.Scan() {
 		if err := scanner.Err(); err != nil {
 			panic(err)
 		}
-		tokens := t.Tokenize(scanner.Text())
+		s := scanner.Text()
+		s = strings.TrimSuffix(s, "\"")
+		s = strings.TrimPrefix(s, "\"")
+		tokens := t.Tokenize(s)
 		for _, token := range tokens {
 			if token.Class == tokenizer.DUMMY {
 				continue
 			}
 			features := token.Features()
-			if features[0] == "名詞" {
+			if features[0] == "名詞" || features[0] == "形容詞" {
 				flag := false
 				for i, _ := range vocabs {
 					if vocabs[i].Word == token.Surface {
@@ -45,14 +50,15 @@ func main() {
 						Freq: 1,
 					})
 				}
+				nounCount++
 			}
 		}
 	}
 
 	sort.Slice(vocabs, func(i, j int) bool { return vocabs[i].Freq > vocabs[j].Freq })
-	fmt.Println("word,frequency")
+	fmt.Println("word\tfrequency\tprob")
 	for _, v := range vocabs {
-		fmt.Printf("\"%s\",\"%d\"\n", v.Word, v.Freq)
+		fmt.Printf("%s\t%d\t%0.3f\n", v.Word, v.Freq, ((float32)(v.Freq) / nounCount))
 	}
 
 }
