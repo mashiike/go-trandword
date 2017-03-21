@@ -1,5 +1,6 @@
 vendor
 go-trandword
+cmd/trandword/trandword
 /data/*
 !/data/default.txt
 *.txt
