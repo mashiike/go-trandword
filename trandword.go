@@ -23,7 +23,6 @@ func NewTrandword(reader io.Reader) *Trandword {
 
 func (tw *Trandword) Analyze() {
 	t := tokenizer.New()
-	nounCount := float32(0)
 	for tw.scanner.Scan() {
 		if err := tw.scanner.Err(); err != nil {
 			panic(err)
@@ -52,7 +51,6 @@ func (tw *Trandword) Analyze() {
 						Freq: 1,
 					})
 				}
-				nounCount++
 			}
 		}
 	}
