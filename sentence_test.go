@@ -2,6 +2,7 @@ package trandword_test
 
 import (
 	"bytes"
+	"io"
 	"testing"
 
 	"github.com/mashiike/go-trandword"
@@ -34,4 +35,7 @@ func TestJsonRead(t *testing.T) {
 		t.Fatalf("TestJsonRead: timestamp is zero  %#v", s)
 	}
 
+	if _, err = sr.Decode(); err != io.EOF {
+		t.Fatalf("TestJsonRead: not eof %#v expected %#v", err, io.EOF)
+	}
 }
