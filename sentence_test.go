@@ -31,7 +31,7 @@ func TestJsonRead(t *testing.T) {
 	if s.DocumentId != 1 {
 		t.Fatalf("TestJsonRead: not match DocumentID  %#v expected DocumentID 1", s)
 	}
-	if s.Timestamp.IsZero() {
+	if s.Timestamp == 0 {
 		t.Fatalf("TestJsonRead: timestamp is zero  %#v", s)
 	}
 

@@ -7,9 +7,9 @@ import (
 )
 
 type Sentence struct {
-	Timestamp  time.Time `json:"timestamp"`
-	DocumentId int       `json:"document_id"`
-	Message    string    `json:"message"`
+	Timestamp  int64  `json:"timestamp"`
+	DocumentId int    `json:"document_id"`
+	Message    string `json:"message"`
 }
 
 type SentenceDecoder interface {
@@ -29,7 +29,7 @@ func NewSentenceDecorder(reader io.Reader) SentenceDecoder {
 func (jsd *JsonSentenceDecoder) Decode() (*Sentence, error) {
 
 	s := Sentence{
-		Timestamp: time.Now(),
+		Timestamp: time.Now().Unix(),
 	}
 	if err := jsd.Decoder.Decode(&s); err != nil {
 		return nil, err
