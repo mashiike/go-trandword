@@ -1,8 +1,35 @@
-寿司が食べたい。
-寿司は高い。
-熊が寿司を食べている。
-熊本に熊が出た。
-寿司のスシロー
-スーさん寿司を食べるの巻
-熊さん寿司を握りつぶすの巻
-
+{
+  "timestamp": 1491151373,
+  "document_id": 1,
+  "message": "寿司が食べたい。"
+}
+{
+  "timestamp": 1491151373,
+  "document_id": 0,
+  "message": "寿司は高い。"
+}
+{
+  "timestamp": 1491151373,
+  "document_id": 1,
+  "message": "熊が寿司を食べている。"
+}
+{
+  "timestamp": 1491151373,
+  "document_id": 0,
+  "message": "熊本に熊が出た。"
+}
+{
+  "timestamp": 1491151373,
+  "document_id": 1,
+  "message": "寿司のスシロー"
+}
+{
+  "timestamp": 1491151373,
+  "document_id": 0,
+  "message": "スーさん寿司を食べるの巻"
+}
+{
+  "timestamp": 1491151373,
+  "document_id": 1,
+  "message": "熊さん寿司を握りつぶすの巻"
+}
