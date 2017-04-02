@@ -41,6 +41,9 @@ func (tw *Trandword) Analyze() {
 				features[0] == "動詞" {
 				flag := false
 				word := features[6]
+				if word == "*" {
+					word = token.Surface
+				}
 				for i, _ := range tw.Vocabs {
 					if tw.Vocabs[i].Word == word {
 						tw.Vocabs[i].Freq++
