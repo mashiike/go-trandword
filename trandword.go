@@ -1,45 +1,48 @@
 package trandword
 
 import (
-	"bufio"
 	"io"
 	"sort"
-	"strings"
 
 	"github.com/ikawaha/kagome/tokenizer"
 )
 
 type Trandword struct {
 	Vocabs  []Vocab
-	scanner *bufio.Scanner
+	Decoder SentenceDecoder
 }
 
 func NewTrandword(reader io.Reader) *Trandword {
 	return &Trandword{
 		Vocabs:  make([]Vocab, 0),
-		scanner: bufio.NewScanner(reader),
+		Decoder: NewSentenceDecorder(reader),
 	}
 }
 
 func (tw *Trandword) Analyze() {
 	t := tokenizer.New()
-	for tw.scanner.Scan() {
-		if err := tw.scanner.Err(); err != nil {
+	for {
+		s, err := tw.Decoder.Decode()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
 			panic(err)
 		}
-		s := tw.scanner.Text()
-		s = strings.TrimSuffix(s, "\"")
-		s = strings.TrimPrefix(s, "\"")
-		tokens := t.Tokenize(s)
+
+		tokens := t.Tokenize(s.Message)
 		for _, token := range tokens {
 			if token.Class == tokenizer.DUMMY {
 				continue
 			}
 			features := token.Features()
-			if features[0] == "名詞" || features[0] == "形容詞" {
+			if features[0] == "名詞" ||
+				features[0] == "形容詞" ||
+				features[0] == "動詞" {
 				flag := false
+				word := features[6]
 				for i, _ := range tw.Vocabs {
-					if tw.Vocabs[i].Word == token.Surface {
+					if tw.Vocabs[i].Word == word {
 						tw.Vocabs[i].Freq++
 						flag = true
 						break
@@ -47,12 +50,13 @@ func (tw *Trandword) Analyze() {
 				}
 				if !flag {
 					tw.Vocabs = append(tw.Vocabs, Vocab{
-						Word: token.Surface,
+						Word: word,
 						Freq: 1,
 					})
 				}
 			}
 		}
+
 	}
 	sort.Slice(tw.Vocabs, func(i, j int) bool { return tw.Vocabs[i].Freq > tw.Vocabs[j].Freq })
 }
